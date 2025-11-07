@@ -7,7 +7,7 @@ const { register, getCurrentUser, login } = require('../controllers/authControll
 
 const router = express.Router();
 
-router.post('/users', validateRequest(registerSchema), register);
+router.post('/register', validateRequest(registerSchema), register);
 router.post('/login', validateRequest(loginSchema), login);
 router.get('/getCurrentUser', protect, getCurrentUser);
 

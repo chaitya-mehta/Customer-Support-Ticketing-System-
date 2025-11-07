@@ -6,8 +6,8 @@ const { updateUserSchema } = require('../validations/userValidation');
 
 const router = express.Router();
 
-router.get('/', getAllUsers);
-router.get('/:id', getUserById);
+router.get('/', protect, getAllUsers);
+router.get('/:id', protect, getUserById);
 router.put('/:id', protect, validateRequest(updateUserSchema), updateUser);
 
 module.exports = router;

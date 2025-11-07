@@ -1,6 +1,6 @@
 const authService = require('../services/authService');
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
     const result = await authService.registerUser(name, email, password, role);
@@ -12,10 +12,7 @@ exports.register = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: error.message
-    });
+    next(error);
   }
 };
 

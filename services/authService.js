@@ -1,34 +1,30 @@
 const User = require('../models/User');
 const { successMessages, errorMessages } = require('../constants/common');
 const { generateToken } = require('../utils/jwtUtils');
+const { BadRequestError } = require('../utils/apiError');
 
 exports.registerUser = async (name, email, password, role = 'customer') => {
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      throw new Error(errorMessages.USER_ALREADY_EXISTS);
-    }
-
-    const user = await User.create({
-      name,
-      email,
-      password,
-      role: role
-    });
-
-    return {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
-      message: successMessages.REGISTER_SUCCESS
-    };
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new BadRequestError(errorMessages.USER_ALREADY_EXISTS);
   }
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+    role: role
+  });
+
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    message: successMessages.REGISTER_SUCCESS
+  };
 };
 
 exports.loginUser = async (email, password) => {
