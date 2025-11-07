@@ -12,5 +12,6 @@ router.put(
   validateRequest(updateCategorySchema),
   categoryController.updateCategory
 );
+router.get('/:id', protect, categoryController.getCategoryById);
 
 module.exports = router;

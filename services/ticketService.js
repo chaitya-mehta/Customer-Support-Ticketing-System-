@@ -1,13 +1,15 @@
-const { successMessages, errorMessages } = require("../constants/common");
-const Ticket = require("../models/Tickets");
+const { successMessages, errorMessages } = require('../constants/common');
+const Ticket = require('../models/Tickets');
+const mongoose = require('mongoose');
 exports.createTicket = async (ticketData) => {
   try {
     const ticket = await Ticket.create(ticketData);
     return {
       ticket,
-      message: successMessages.TICKET_CREATED,
+      message: successMessages.TICKET_CREATED
     };
   } catch (error) {
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -18,14 +20,15 @@ exports.getTicketById = async (id) => {
     }
 
     const ticket = await Ticket.findById(id)
-      .populate("customer", "name email")
-      .populate("assignedAgent", "name email")
-      .populate("category", "name");
+      .populate('customer', 'name email')
+      .populate('assignedAgent', 'name email')
+      .populate('category', 'name');
 
     if (!ticket) throw new Error(errorMessages.TICKET_ERROR);
 
     return ticket;
   } catch (error) {
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -43,9 +46,10 @@ exports.updateTicket = async (ticketId, updateData, userId) => {
 
     return {
       ticket,
-      message: successMessages.TICKET_UPDATE_SUCCESS,
+      message: successMessages.TICKET_UPDATE_SUCCESS
     };
   } catch (error) {
+    console.error(error);
     throw new Error(error.message);
   }
 };

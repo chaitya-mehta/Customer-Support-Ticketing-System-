@@ -1,4 +1,4 @@
-const categoryService = require("../services/categoryService");
+const categoryService = require('../services/categoryService');
 exports.createCategory = async (req, res) => {
   try {
     const { name } = req.body;
@@ -8,12 +8,12 @@ exports.createCategory = async (req, res) => {
     res.status(201).json({
       success: true,
       message: result.message,
-      data: result.category,
+      data: result.category
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: error.message,
+      message: error.message
     });
   }
 };
@@ -28,12 +28,27 @@ exports.updateCategory = async (req, res) => {
     res.status(200).json({
       success: true,
       message: result.message,
-      data: result.category,
+      data: result.category
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: error.message,
+      message: error.message
+    });
+  }
+};
+exports.getCategoryById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const category = await categoryService.getCategoryById(id);
+    res.status(200).json({
+      success: true,
+      data: category
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
     });
   }
 };

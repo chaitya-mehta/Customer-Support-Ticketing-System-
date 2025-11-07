@@ -1,6 +1,6 @@
-const { errorMessages, successMessages } = require("../constants/common");
-const mongoose = require("mongoose");
-const User = require("../models/User");
+const { errorMessages, successMessages } = require('../constants/common');
+const mongoose = require('mongoose');
+const User = require('../models/User');
 
 exports.getAllUsers = async (query) => {
   try {
@@ -8,19 +8,18 @@ exports.getAllUsers = async (query) => {
     const limit = parseInt(query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const sortBy = query.sortBy || "createdAt";
-    const sortOrder = query.sortOrder === "asc" ? 1 : -1;
+    const sortBy = query.sortBy || 'createdAt';
+    const sortOrder = query.sortOrder === 'asc' ? 1 : -1;
 
     const filters = {};
 
-    if (query.isActive !== undefined)
-      filters.isActive = query.isActive === "true";
+    if (query.isActive !== undefined) filters.isActive = query.isActive === 'true';
     else filters.isActive = true;
 
     if (query.role) filters.role = query.role;
 
     if (query.search) {
-      const regex = new RegExp(query.search, "i");
+      const regex = new RegExp(query.search, 'i');
       filters.$or = [{ name: regex }, { email: regex }];
     }
 
@@ -28,7 +27,7 @@ exports.getAllUsers = async (query) => {
       .sort({ [sortBy]: sortOrder })
       .skip(skip)
       .limit(limit)
-      .select("-password");
+      .select('-password');
 
     const total = await User.countDocuments(filters);
 
@@ -36,9 +35,10 @@ exports.getAllUsers = async (query) => {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalRecords: total,
-      data: users,
+      data: users
     };
   } catch (error) {
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -53,6 +53,7 @@ exports.getUser = async (id) => {
     }
     return user;
   } catch (error) {
+    console.error(error);
     throw new Error(error.message);
   }
 };
@@ -60,12 +61,12 @@ exports.updateUser = async (currentLoginUserId, userId, updateData) => {
   try {
     const fieldsToUpdate = {
       name: updateData.name,
-      modifiedBy: currentLoginUserId,
+      modifiedBy: currentLoginUserId
     };
 
     const user = await User.findByIdAndUpdate(userId, fieldsToUpdate, {
       new: true,
-      runValidators: true,
+      runValidators: true
     });
 
     if (!user) {
@@ -77,11 +78,12 @@ exports.updateUser = async (currentLoginUserId, userId, updateData) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role
       },
-      message: successMessages.PROFILE_UPDATE_SUCCESS,
+      message: successMessages.PROFILE_UPDATE_SUCCESS
     };
   } catch (error) {
+    console.error(error);
     throw error.message;
   }
 };
