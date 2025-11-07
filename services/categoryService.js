@@ -94,3 +94,32 @@ exports.getAllCategories = async (query) => {
     throw new Error(error);
   }
 };
+exports.toggleCategoryStatus = async (id, userId, isActive) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error(errorMessages.CATEGORY_NOT_FOUND);
+    }
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { isActive: isActive, modifiedBy: userId, updatedAt: new Date() },
+      { new: true }
+    );
+
+    if (!category) {
+      throw new Error(errorMessages.CATEGORY_NOT_FOUND);
+    }
+    return category;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+};
+exports.getActiveCategories = async () => {
+  try {
+    const categories = await Category.find({ isActive: true }).sort({ name: 1 }).select('name');
+    return categories;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+};

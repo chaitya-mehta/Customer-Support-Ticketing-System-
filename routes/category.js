@@ -14,4 +14,6 @@ router.put(
 );
 router.get('/:id', protect, categoryController.getCategoryById);
 router.get('/', categoryController.getAllCategories);
+router.patch('/:id/status', protect, categoryController.toggleCategoryStatus);
+router.get('/active/list', categoryController.getActiveCategories);
 module.exports = router;
