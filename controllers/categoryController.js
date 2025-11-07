@@ -52,3 +52,17 @@ exports.getCategoryById = async (req, res) => {
     });
   }
 };
+exports.getAllCategories = async (req, res) => {
+  try {
+    const categories = await categoryService.getAllCategories(req.query);
+    res.status(200).json({
+      success: true,
+      data: categories
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};

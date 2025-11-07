@@ -13,5 +13,5 @@ router.put(
   categoryController.updateCategory
 );
 router.get('/:id', protect, categoryController.getCategoryById);
-
+router.get('/', categoryController.getAllCategories);
 module.exports = router;

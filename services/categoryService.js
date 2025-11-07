@@ -62,3 +62,35 @@ exports.getCategoryById = async (id) => {
     throw error;
   }
 };
+
+exports.getAllCategories = async (query) => {
+  try {
+    const page = parseInt(query.page) || 1;
+    const limit = parseInt(query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    if (query.isActive === 'true') filter.isActive = true;
+    else if (query.isActive === 'false') filter.isActive = false;
+
+    if (query.search) {
+      filter.name = { $regex: query.search, $options: 'i' };
+    }
+
+    const [categories, total] = await Promise.all([
+      Category.find(filter).skip(skip).limit(limit).sort({ createdAt: -1 }),
+      Category.countDocuments(filter)
+    ]);
+
+    return {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalRecords: total,
+      data: categories
+    };
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+};
