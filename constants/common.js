@@ -6,6 +6,7 @@ const successMessages = {
   PROFILE_UPDATE_SUCCESS: 'Profile updated successfully',
   TICKET_SUCCESS: 'Ticket created successfully',
   TICKET_UPDATE_SUCCESS: 'Ticket updated successfully',
+  AGENT_COMMENT_ADDED: 'Agent comment added successfully',
   CATEGORY_STATUS_TOGGLE_SUCCESS: 'Category status changed successfully'
 };
 const errorMessages = {

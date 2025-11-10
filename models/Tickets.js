@@ -48,6 +48,17 @@ const ticketSchema = new mongoose.Schema(
         }
       }
     ],
+    agentComments: [
+      {
+        agentId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true
+        },
+        commentText: { type: String, required: true, trim: true },
+        commentedAt: { type: Date, default: Date.now }
+      }
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

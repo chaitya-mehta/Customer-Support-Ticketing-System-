@@ -32,13 +32,6 @@ const createTicketSchema = Joi.object({
     'any.only': 'Status must be one of: open, in progress, resolved, closed'
   }),
 
-  customer: Joi.string()
-    .regex(/^[0-9a-fA-F]{24}$/)
-    .optional()
-    .messages({
-      'string.pattern.base': 'Invalid Customer ID format'
-    }),
-
   assignedAgent: Joi.string()
     .regex(/^[0-9a-fA-F]{24}$/)
     .optional()
