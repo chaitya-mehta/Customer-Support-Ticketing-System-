@@ -1,7 +1,12 @@
 const User = require('../models/User');
 const { successMessages, errorMessages } = require('../constants/common');
 const { generateToken } = require('../utils/jwtUtils');
-const { BadRequestError } = require('../utils/apiError');
+const {
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError
+} = require('../utils/apiError');
 
 exports.registerUser = async (name, email, password, role = 'customer') => {
   const existingUser = await User.findOne({ email });
@@ -28,58 +33,48 @@ exports.registerUser = async (name, email, password, role = 'customer') => {
 };
 
 exports.loginUser = async (email, password) => {
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      throw new Error(errorMessages.INVALID_CREDENTIALS);
-    }
-
-    const isPasswordValid = await user.matchPassword(password);
-    if (!isPasswordValid) {
-      throw new Error(errorMessages.INVALID_CREDENTIALS);
-    }
-
-    if (!user.isActive) {
-      throw new Error(errorMessages.ACCOUNT_DEACTIVATED);
-    }
-
-    const token = generateToken(user._id);
-
-    return {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
-      token,
-      message: successMessages.LOGIN_SUCCESS
-    };
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new UnauthorizedError(errorMessages.INVALID_CREDENTIALS);
   }
+
+  const isPasswordValid = await user.matchPassword(password);
+  if (!isPasswordValid) {
+    throw new UnauthorizedError(errorMessages.INVALID_CREDENTIALS);
+  }
+
+  if (!user.isActive) {
+    throw new ForbiddenError(errorMessages.ACCOUNT_DEACTIVATED);
+  }
+
+  const token = generateToken(user._id);
+
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    token,
+    message: successMessages.LOGIN_SUCCESS
+  };
 };
 
 exports.getCurrentUser = async (userId) => {
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new Error(errorMessages.USER_NOT_FOUND);
-    }
-
-    return {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
-        createdAt: user.createdAt
-      }
-    };
-  } catch (error) {
-    console.error(error);
-    throw error;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new NotFoundError(errorMessages.USER_NOT_FOUND);
   }
+
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      createdAt: user.createdAt
+    }
+  };
 };

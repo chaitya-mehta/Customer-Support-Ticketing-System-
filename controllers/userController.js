@@ -1,6 +1,6 @@
 const userService = require('../services/userService');
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
   try {
     const result = await userService.getAllUsers(req.query);
     res.status(200).json({
@@ -8,13 +8,10 @@ exports.getAllUsers = async (req, res) => {
       data: result
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    next(error);
   }
 };
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res, next) => {
   try {
     const user = await userService.getUser(req.params.id);
     res.status(200).json({
@@ -22,13 +19,10 @@ exports.getUserById = async (req, res) => {
       data: user
     });
   } catch (error) {
-    res.status(404).json({
-      success: false,
-      error: error.message
-    });
+    next(error);
   }
 };
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     const updateData = {
       name: req.body.name
@@ -44,9 +38,6 @@ exports.updateUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(404).json({
-      success: false,
-      error: error
-    });
+    next(error);
   }
 };

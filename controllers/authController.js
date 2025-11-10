@@ -16,7 +16,7 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -31,14 +31,11 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(404).json({
-      success: false,
-      error: error.message
-    });
+    next(error);
   }
 };
 
-exports.getCurrentUser = async (req, res) => {
+exports.getCurrentUser = async (req, res, next) => {
   try {
     const result = await authService.getCurrentUser(req.user.id);
 
@@ -49,9 +46,6 @@ exports.getCurrentUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    next(error);
   }
 };

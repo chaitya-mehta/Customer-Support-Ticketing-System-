@@ -1,6 +1,6 @@
 const { successMessages } = require('../constants/common');
 const categoryService = require('../services/categoryService');
-exports.createCategory = async (req, res) => {
+exports.createCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
 
@@ -12,14 +12,11 @@ exports.createCategory = async (req, res) => {
       data: result.category
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
 
-exports.updateCategory = async (req, res) => {
+exports.updateCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -32,13 +29,10 @@ exports.updateCategory = async (req, res) => {
       data: result.category
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
-exports.getCategoryById = async (req, res) => {
+exports.getCategoryById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const category = await categoryService.getCategoryById(id);
@@ -47,13 +41,10 @@ exports.getCategoryById = async (req, res) => {
       data: category
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
-exports.getAllCategories = async (req, res) => {
+exports.getAllCategories = async (req, res, next) => {
   try {
     const categories = await categoryService.getAllCategories(req.query);
     res.status(200).json({
@@ -61,30 +52,24 @@ exports.getAllCategories = async (req, res) => {
       data: categories
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
-exports.toggleCategoryStatus = async (req, res) => {
+exports.toggleCategoryStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const isActive = req.body.isActive;
-    const result = await categoryService.toggleCategoryStatus(id, req.user._id,isActive);
+    const result = await categoryService.toggleCategoryStatus(id, req.user._id, isActive);
     res.status(200).json({
       success: true,
       message: successMessages.CATEGORY_STATUS_TOGGLE_SUCCESS,
       data: result
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
-exports.getActiveCategories = async (req, res) => {
+exports.getActiveCategories = async (req, res, next) => {
   try {
     const categories = await categoryService.getActiveCategories();
     res.status(200).json({
@@ -92,9 +77,6 @@ exports.getActiveCategories = async (req, res) => {
       data: categories
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
