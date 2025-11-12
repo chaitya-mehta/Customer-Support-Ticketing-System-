@@ -41,3 +41,21 @@ exports.updateUser = async (req, res, next) => {
     next(error);
   }
 };
+exports.toggleUserStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const isActive = req.body.isActive;
+
+    const result = await userService.toggleUserStatus(req.user.id, id, isActive);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: {
+        user: result.user
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

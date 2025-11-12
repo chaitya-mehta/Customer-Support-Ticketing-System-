@@ -7,7 +7,8 @@ const successMessages = {
   TICKET_SUCCESS: 'Ticket created successfully',
   TICKET_UPDATE_SUCCESS: 'Ticket updated successfully',
   AGENT_COMMENT_ADDED: 'Agent comment added successfully',
-  CATEGORY_STATUS_TOGGLE_SUCCESS: 'Category status changed successfully'
+  CATEGORY_STATUS_TOGGLE_SUCCESS: 'Category status changed successfully',
+  USER_STATUS_TOGGLE_SUCCESS: 'User status changed successfully'
 };
 const errorMessages = {
   INVALID_CREDENTIALS: 'Invalid credentials',

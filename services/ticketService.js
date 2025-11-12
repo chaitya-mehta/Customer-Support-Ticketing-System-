@@ -126,3 +126,31 @@ exports.addAgentComment = async (ticketId, agentId, commentText) => {
     message: successMessages.AGENT_COMMENT_ADDED
   };
 };
+exports.getAllTicketsByUser = async (userId, query) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const filter = { createdBy: userId };
+
+  if (query.status) filter.status = query.status;
+  if (query.priority) filter.priority = query.priority;
+  if (query.category) filter.category = query.category;
+  if (query.search) filter.title = { $regex: query.search, $options: 'i' };
+
+  const [tickets, total] = await Promise.all([
+    Ticket.find(filter)
+      .populate('customer assignedAgent category createdBy modifiedBy')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Ticket.countDocuments(filter)
+  ]);
+
+  return {
+    tickets,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+    totalItems: total
+  };
+};

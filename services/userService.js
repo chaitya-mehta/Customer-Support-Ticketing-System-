@@ -14,7 +14,6 @@ exports.getAllUsers = async (query) => {
   const filters = {};
 
   if (query.isActive !== undefined) filters.isActive = query.isActive === 'true';
-  else filters.isActive = true;
 
   if (query.role) filters.role = query.role;
 
@@ -71,5 +70,31 @@ exports.updateUser = async (currentLoginUserId, userId, updateData) => {
       role: user.role
     },
     message: successMessages.PROFILE_UPDATE_SUCCESS
+  };
+};
+exports.toggleUserStatus = async (currentLoginUserId, userId, isActive) => {
+  const fieldsToUpdate = {
+    isActive: isActive,
+    modifiedBy: currentLoginUserId
+  };
+
+  const user = await User.findByIdAndUpdate(userId, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  });
+
+  if (!user) {
+    throw new NotFoundError(errorMessages.USER_NOT_FOUND);
+  }
+
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive
+    },
+    message: successMessages.USER_STATUS_TOGGLE_SUCCESS
   };
 };
