@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 exports.createTicket = async (data, userId, files) => {
   const attachments =
     files?.map((file) => ({
-      fileName: file.originalname,
-      filePath: file.path,
-      fileType: file.mimetype
+      filename: file.originalname,
+      path: file.path,
+      uploadedBy: userId
     })) || [];
 
   const ticket = await Ticket.create({

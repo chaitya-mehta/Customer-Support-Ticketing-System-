@@ -61,7 +61,7 @@ exports.addAgentComment = async (req, res, next) => {
 };
 exports.getAllTicketsByUser = async (req, res, next) => {
   try {
-    const result = await ticketService.getTicketsByUser(req.user.id, req.query);
+    const result = await ticketService.getAllTicketsByUser(req.user.id, req.query);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);
