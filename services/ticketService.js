@@ -32,7 +32,7 @@ exports.getTickets = async (query) => {
   if (query.status) filter.status = query.status;
   if (query.priority) filter.priority = query.priority;
   if (query.category) filter.category = query.category;
-  if (query.search) filter.title = { $regex: query.search, $options: 'i' };
+  if (query.search) filter.name = { $regex: query.search, $options: 'i' };
 
   const [tickets, total] = await Promise.all([
     Ticket.find(filter)
@@ -47,7 +47,7 @@ exports.getTickets = async (query) => {
     tickets,
     currentPage: page,
     totalPages: Math.ceil(total / limit),
-    totalItems: total
+    totalRecords: total
   };
 };
 
@@ -69,7 +69,7 @@ exports.getTicketById = async (id) => {
   return ticket;
 };
 
-exports.updateTicket = async (id, data, userId, files) => {
+exports.updateTicket = async (id, commentText, userId) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new NotFoundError(errorMessages.TICKET_ERROR);
   }
@@ -79,19 +79,7 @@ exports.updateTicket = async (id, data, userId, files) => {
     throw new NotFoundError(errorMessages.TICKET_ERROR);
   }
 
-  const newAttachments =
-    files?.map((file) => ({
-      fileName: file.originalname,
-      filePath: file.path,
-      fileType: file.mimetype
-    })) || [];
-
-  Object.assign(ticket, data);
-
-  if (newAttachments.length > 0) {
-    ticket.attachments.push(...newAttachments);
-  }
-
+  ticket.commentText = commentText?.trim();
   ticket.modifiedBy = userId;
   ticket.updatedAt = new Date();
   await ticket.save();
@@ -102,24 +90,32 @@ exports.updateTicket = async (id, data, userId, files) => {
   };
 };
 
-exports.addAgentComment = async (ticketId, agentId, commentText) => {
+exports.addAgentComment = async (ticketId, userId, commentText, newStatus = null) => {
   if (!mongoose.Types.ObjectId.isValid(ticketId)) {
     throw new NotFoundError(errorMessages.TICKET_ERROR);
   }
-
-  const ticket = await Ticket.findByIdAndUpdate(
-    ticketId,
-    {
-      $push: {
-        agentComments: { agentId, commentText }
-      }
-    },
-    { new: true }
-  ).populate('agentComments.agentId', 'name email');
-
-  if (!ticket) {
+  const existingTicket = await Ticket.findById(ticketId);
+  if (!existingTicket) {
     throw new NotFoundError(errorMessages.TICKET_ERROR);
   }
+  const updateData = {
+    $push: {
+      agentComments: {
+        agentId: userId,
+        commentText: commentText
+      }
+    },
+    modifiedBy: userId
+  };
+  updateData.status = newStatus || existingTicket.status;
+  const ticket = await Ticket.findByIdAndUpdate(ticketId, updateData, { new: true })
+    .populate('agentComments.agentId', 'name email')
+    .populate('assignedAgent', 'name email')
+    .populate('customer', 'name email');
+
+  // if (!ticket) {
+  //   throw new NotFoundError(errorMessages.TICKET_ERROR);
+  // }
 
   return {
     ticket,

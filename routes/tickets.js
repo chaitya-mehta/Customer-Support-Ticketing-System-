@@ -17,6 +17,6 @@ router.post(
 router.get('/', protect, ticketController.getAllTickets);
 router.get('/user', protect, ticketController.getAllTicketsByUser);
 router.get('/:id', protect, ticketController.getTicketById);
-router.put('/:id', protect, validateRequest(updateTicketSchema), ticketController.updateTicket);
+router.put('/:id', protect, ticketController.updateTicket);
 router.post('/:id/agent-comment', protect, ticketController.addAgentComment);
 module.exports = router;

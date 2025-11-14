@@ -1,12 +1,7 @@
 const User = require('../models/User');
 const { successMessages, errorMessages } = require('../constants/common');
 const { generateToken } = require('../utils/jwtUtils');
-const {
-  BadRequestError,
-  UnauthorizedError,
-  ForbiddenError,
-  NotFoundError
-} = require('../utils/apiError');
+const { BadRequestError, ForbiddenError, NotFoundError } = require('../utils/apiError');
 
 exports.registerUser = async (name, email, password, role = 'customer') => {
   const existingUser = await User.findOne({ email });
@@ -35,12 +30,12 @@ exports.registerUser = async (name, email, password, role = 'customer') => {
 exports.loginUser = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
-    throw new UnauthorizedError(errorMessages.INVALID_CREDENTIALS);
+    throw new BadRequestError(errorMessages.INVALID_CREDENTIALS);
   }
 
   const isPasswordValid = await user.matchPassword(password);
   if (!isPasswordValid) {
-    throw new UnauthorizedError(errorMessages.INVALID_CREDENTIALS);
+    throw new BadRequestError(errorMessages.INVALID_CREDENTIALS);
   }
 
   if (!user.isActive) {

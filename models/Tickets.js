@@ -59,6 +59,10 @@ const ticketSchema = new mongoose.Schema(
         commentedAt: { type: Date, default: Date.now }
       }
     ],
+    commentText: {
+      type: String,
+      trim: true
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

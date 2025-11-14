@@ -35,13 +35,9 @@ exports.getTicketById = async (req, res, next) => {
 
 exports.updateTicket = async (req, res, next) => {
   try {
-    const result = await ticketService.updateTicket(
-      req.params.id,
-      req.body,
-      req.user.id,
-      req.files
-    );
-    res.status(200).json({ success: true, ...result });
+    const { commentText } = req.body;
+    const result = await ticketService.updateTicket(req.params.id, commentText, req.user.id);
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -49,11 +45,10 @@ exports.updateTicket = async (req, res, next) => {
 
 exports.addAgentComment = async (req, res, next) => {
   try {
-    const ticket = await ticketService.addAgentComment(
-      req.params.id,
-      req.user.id,
-      req.body.commentText
-    );
+    const { commentText, status } = req.body;
+    const ticketId = req.params.id;
+    const userId = req.user.id;
+    const ticket = await ticketService.addAgentComment(ticketId, userId, commentText, status);
     res.status(200).json({ success: true, data: ticket });
   } catch (error) {
     next(error);
