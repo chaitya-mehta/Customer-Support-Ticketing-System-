@@ -1,7 +1,7 @@
 const express = require('express');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const ticketController = require('../controllers/ticketController');
-const { createTicketSchema, updateTicketSchema } = require('../validations/ticketValidation');
+const { createTicketSchema } = require('../validations/ticketValidation');
 const { validateRequest } = require('../middleware/validation');
 const upload = require('../middleware/upload');
 
@@ -14,7 +14,7 @@ router.post(
   validateRequest(createTicketSchema),
   ticketController.createTicket
 );
-router.get('/', protect, ticketController.getAllTickets);
+router.get('/', protect, authorize('admin', 'agent'), ticketController.getAllTickets);
 router.get('/user', protect, ticketController.getAllTicketsByUser);
 router.get('/:id', protect, ticketController.getTicketById);
 router.put('/:id', protect, ticketController.updateTicket);

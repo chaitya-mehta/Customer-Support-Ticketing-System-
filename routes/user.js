@@ -5,14 +5,14 @@ const {
   updateUser,
   toggleUserStatus
 } = require('../controllers/userController');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const { validateRequest } = require('../middleware/validation');
 const { updateUserSchema } = require('../validations/userValidation');
 
 const router = express.Router();
 
-router.get('/', protect, getAllUsers);
+router.get('/', protect, authorize('admin'), getAllUsers);
 router.get('/:id', protect, getUserById);
 router.put('/:id', protect, validateRequest(updateUserSchema), updateUser);
-router.patch('/:id/status', protect, toggleUserStatus);
+router.patch('/:id/status', protect, authorize('admin'), toggleUserStatus);
 module.exports = router;
