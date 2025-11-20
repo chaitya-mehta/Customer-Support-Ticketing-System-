@@ -15,6 +15,7 @@ const { ApiError } = require('../utils/apiError');
  * and a 500 status code.
  */
 const errorHandler = (err, req, res, next) => {
+  console.log('>>>>', err);
   if (err instanceof ApiError) {
     res.status(err.statusCode).json({
       success: false,

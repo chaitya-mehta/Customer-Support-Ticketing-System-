@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -14,19 +14,19 @@ const { errorMessages } = require('./constants/common');
 const { errorHandler } = require('./middleware/error.middleware');
 const { initSocket } = require('./socket');
 const { startNotificationWorker } = require('./queues/notificationWorker');
-const { protect } = require('./middleware/auth');
+// const { protect } = require('./middleware/auth');
 
 connectDB();
 
 const app = express();
 
 app.use(helmet());
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100
+// });
 
-app.use(limiter);
+// app.use(limiter);
 
 app.use(cors());
 
