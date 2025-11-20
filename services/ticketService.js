@@ -1,5 +1,6 @@
 const { successMessages, errorMessages } = require('../constants/common');
 const Ticket = require('../models/Tickets');
+const { addNotificationJob } = require('../queues/notificationQueue');
 const { NotFoundError } = require('../utils/apiError');
 const mongoose = require('mongoose');
 
@@ -15,6 +16,17 @@ exports.createTicket = async (data, userId, files) => {
     ...data,
     createdBy: userId,
     attachments
+  });
+  await addNotificationJob({
+    type: 'ticket.created',
+    payload: {
+      ticketId: ticket._id,
+      name: ticket.name,
+      priority: ticket.priority,
+      category: ticket.category,
+      createdBy: ticket.createdBy
+    },
+    userId: userId
   });
 
   return {
@@ -83,6 +95,11 @@ exports.updateTicket = async (id, commentText, userId) => {
   ticket.modifiedBy = userId;
   ticket.updatedAt = new Date();
   await ticket.save();
+  await addNotificationJob({
+    type: 'ticket.updated',
+    payload: { ticketId: ticket._id, comment: commentText?.trim() },
+    userId: userId
+  });
 
   return {
     ticket,
@@ -116,6 +133,11 @@ exports.addAgentComment = async (ticketId, userId, commentText, newStatus = null
   // if (!ticket) {
   //   throw new NotFoundError(errorMessages.TICKET_ERROR);
   // }
+  await addNotificationJob({
+    type: 'ticket.status.updated',
+    payload: { ticketId: ticket._id, status: ticket.status, comment: commentText?.trim() },
+    userId: ticket.createdBy
+  });
 
   return {
     ticket,

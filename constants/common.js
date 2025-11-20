@@ -8,7 +8,8 @@ const successMessages = {
   TICKET_UPDATE_SUCCESS: 'Ticket updated successfully',
   AGENT_COMMENT_ADDED: 'comment added successfully & Status Updated ',
   CATEGORY_STATUS_TOGGLE_SUCCESS: 'Category status changed successfully',
-  USER_STATUS_TOGGLE_SUCCESS: 'User status changed successfully'
+  USER_STATUS_TOGGLE_SUCCESS: 'User status changed successfully',
+  NOTIFICATION_QUEUED_SUCCESS: 'Notification Added In Queue'
 };
 const errorMessages = {
   INVALID_CREDENTIALS: 'Invalid credentials',
@@ -21,7 +22,9 @@ const errorMessages = {
   ROUTE_ERROR: 'Route not found',
   TICKET_ERROR: 'Ticket not found',
   CATEGORY_ALREADY_EXIST: 'Category already exists',
-  CATEGORY_NOT_FOUND: 'Category not found'
+  CATEGORY_NOT_FOUND: 'Category not found',
+  NOTIFICATION_QUEUE_FAILED: 'Notification Queued Failed',
+  MARK_READ_FAILED: 'Marking notifications as read failed'
 };
 
 const HTTP_STATUS = {
