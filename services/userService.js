@@ -47,6 +47,10 @@ exports.getUser = async (id) => {
   }
   return user;
 };
+exports.getAllAgents = async () => {
+  const agents = await User.find({ role: 'agent', isActive: true }).select('-password');
+  return agents;
+};
 exports.updateUser = async (currentLoginUserId, userId, updateData) => {
   const fieldsToUpdate = {
     name: updateData.name,

@@ -11,6 +11,17 @@ exports.getAllUsers = async (req, res, next) => {
     next(error);
   }
 };
+exports.getAllAgents = async (req, res, next) => {
+  try {
+    const result = await userService.getAllAgents();
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 exports.getUserById = async (req, res, next) => {
   try {
     const user = await userService.getUser(req.params.id);
